@@ -1,0 +1,122 @@
+Rdd
+Transformations:
+Certainly, here is a list of PySpark RDD transformations without examples:
+1. `map(func)`: Applies a function to each element of the RDD and returns a new RDD.
+2. `filter(func)`: Returns a new RDD containing only the elements that satisfy the given predicate.
+3. `flatMap(func)`: Similar to `map`, but each input item can be mapped to zero or more output items.
+4. `union(otherRDD)`: Returns a new RDD containing the elements of the original RDD and the other RDD.
+5. `distinct(numPartitions=None)`: Returns a new RDD with distinct elements.
+6. `groupByKey(numPartitions=None)`: Groups the elements of the RDD by key.
+7. `reduceByKey(func, numPartitions=None)`: Reduces the elements of the RDD by key using the specified function.
+8. `sortByKey(ascending=True, numPartitions=None)`: Sorts the elements of the RDD by key.
+9. `join(otherRDD, numPartitions=None)`: Performs an inner join between two RDDs based on their keys.
+10. `cogroup(otherRDD, numPartitions=None)`: Groups the elements of the two RDDs by key and performs a cogroup operation.
+11. `mapValues(func)`: Applies a function to the values of each key-value pair without changing the keys.
+12. `flatMapValues(func)`: Similar to `mapValues`, but each input value can be mapped to zero or more output values.
+13. `keys()`: Returns an RDD of the keys of key-value pairs.
+14. `values()`: Returns an RDD of the values of key-value pairs.
+15. `sample(withReplacement, fraction, seed=None)`: Returns a random sample of the RDD.
+These transformations are fundamental building blocks for constructing more complex data processing pipelines in PySpark.
+Actions
+PySpark RDD (Resilient Distributed Dataset) actions are operations that return values to the driver program or write data to an external storage system. Here is a list of some common PySpark RDD actions:
+1. `collect()`: Returns all elements of the RDD as an array to the driver program. It is often used cautiously as it brings all the data to the driver, which may cause out-of-memory errors for large datasets.
+2. `count()`: Returns the number of elements in the RDD.
+3. `first()`: Returns the first element of the RDD.
+4. `take(n)`: Returns the first n elements of the RDD.
+5. `takeSample(withReplacement, num, seed=None)`: Returns a random sample of num elements from the RDD with or without replacement.
+6. `reduce(func)`: Aggregates the elements of the RDD using a specified associative and commutative binary operator.
+7. `fold(zeroValue, func)`: Aggregates the elements of the RDD using a specified associative binary operator and a neutral "zero value."
+8. `aggregate(zeroValue, seqOp, combOp)`: Aggregate the elements of the RDD using two different aggregation functions.
+9. `foreach(func)`: Applies a function to each element of the RDD. This is a way to execute code on each node of the cluster.
+10. `countByKey()`: Counts the number of occurrences of each key in a key-value RDD.
+11. `collectAsMap()`: Returns the key-value pairs of the RDD as a dictionary to the driver program.
+12. `saveAsTextFile(path)`: Writes the elements of the RDD to a text file or a set of text files in a specified directory.
+13. `saveAsSequenceFile(path)`: Writes the elements of the RDD to a Hadoop SequenceFile.
+14. `saveAsPickleFile(path)`: Writes the elements of the RDD to a file in pickle format.
+15. `foreachPartition(func)`: Applies a function to each partition of the RDD. This can be useful for performing operations that require a per-partition setup.
+These actions are used to trigger the execution of the computation defined by transformations on RDDs. They return values to the driver program or save the data to an external storage system.
+Different types of read files and write files from external using rdd
+RDD (Resilient Distributed Dataset) in PySpark is a low-level abstraction representing a distributed collection of objects. RDDs can be used to read data from various external sources and write data to external storage systems. Below are examples of 20 different types of file formats and storage systems that you can read from and write to using RDD in PySpark:
+Read Files:
+1. Text Files (`textFile`): Read text files from HDFS, local file system, or other supported file systems.
+```python
+rdd = sc.textFile("hdfs:///path/to/textfile/*.txt")
+```
+2. Sequence Files (`sequenceFile`): Read Hadoop SequenceFiles.
+```python
+rdd = sc.sequenceFile("hdfs:///path/to/sequencefile")
+```
+3. JSON Files (`jsonFile`): Read JSON files.
+```python
+rdd = sqlContext.read.json("hdfs:///path/to/jsonfile/*.json").rdd
+```
+4. Parquet Files (`parquetFile`): Read Parquet files.
+```python
+rdd = sqlContext.read.parquet("hdfs:///path/to/parquetfile").rdd
+```
+5. Avro Files (`avroFile`): Read Avro files.
+```python
+rdd = sc.hadoopFile("hdfs:///path/to/avrofile", "org.apache.avro.mapred.AvroInputFormat")
+```
+6. CSV Files (`csvFile`): Read CSV files.
+```python
+rdd = sc.textFile("hdfs:///path/to/csvfile/*.csv").map(lambda line: line.split(','))
+```
+7. Hive Tables (`hiveContext.table`): Read data from Hive tables.
+```python
+rdd = hiveContext.table("database.table_name").rdd
+```
+8. Cassandra Tables (`cassandraTable`): Read data from Cassandra tables.
+```python
+rdd = sc.cassandraTable("keyspace", "table")
+```
+9. JDBC (`jdbcRDD`): Read data from relational databases using JDBC.
+```python
+rdd = sc.parallelize([(1,), (2,), (3,)]).jdbc("jdbc:postgresql:dbserver", "table_name", properties={"user": "username", "password": "password"})
+```
+10. MongoDB (`mongoRDD`): Read data from MongoDB.
+```python
+rdd = sc.mongoRDD("mongodb://localhost:27017/db.collection")
+```
+Write Files:
+11. Text Files (`saveAsTextFile`): Write RDD content to text files.
+```python
+rdd.saveAsTextFile("hdfs:///path/to/output")
+```
+12. Sequence Files (`saveAsSequenceFile`): Write RDD content to Hadoop SequenceFiles.
+```python
+rdd.saveAsSequenceFile("hdfs:///path/to/output")
+```
+13. JSON Files (`saveAsJsonFile`): Write RDD content to JSON files.
+```python
+rdd.toDF().write.json("hdfs:///path/to/output/jsonfile")
+```
+14. Parquet Files (`saveAsParquetFile`): Write RDD content to Parquet files.
+```python
+rdd.toDF().write.parquet("hdfs:///path/to/output/parquetfile")
+```
+15. Avro Files (`saveAsAvroFile`): Write RDD content to Avro files.
+```python
+rdd.saveAsHadoopFile("hdfs:///path/to/output/avrofile", "org.apache.avro.mapred.AvroOutputFormat")
+```
+16. CSV Files (`saveAsCsvFile`): Write RDD content to CSV files.
+```python
+rdd.map(lambda x: ','.join(map(str, x))).saveAsTextFile("hdfs:///path/to/output/csvfile")
+```
+17. Hive Tables (`saveAsTable`): Save RDD data to a Hive table.
+```python
+rdd.toDF().write.saveAsTable("database.table_name")
+```
+18. Cassandra Tables (`saveToCassandra`): Save RDD data to a Cassandra table.
+```python
+rdd.saveToCassandra("keyspace", "table")
+```
+19. JDBC (`jdbcRDD`): Write RDD content to a relational database using JDBC.
+```python
+rdd.saveAsNewAPIHadoopDataset(conf=conf, keyConverter=key_conv, valueConverter=value_conv)
+```
+20. MongoDB (`saveToMongoDB`): Write RDD content to MongoDB.
+```python
+rdd.saveToMongoDB("mongodb://localhost:27017/db.collection")
+```
+Note: The examples provided assume SparkContext (`sc`) and Spark SQLContext (`sqlContext`) are available. The actual code might vary based on your specific Spark version and configuration.
